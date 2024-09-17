@@ -12,22 +12,29 @@ export class Boot {
     const commandsFolders = fs.readdirSync(commandPath);
     client.commands = new Collection();
     
+    console.clear();
+    console.log("Started loading commands...");
+    
     for (const folder of commandsFolders) {
       const commandsPath = path.join(commandPath, folder);
       const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.ts'));
       
+      console.log(`\tModule: ${folder}`);
+      
       for (const file of commandFiles) {
         const filePath = path.join(commandsPath, file);
         const command = require(filePath);
-        console.log(file)
         
         if ('data' in command && 'execute' in command) {
+          console.log(`\t\tCommand: ${command.data.name}`)
           client.commands.set(command.data.name, command);
         } else {
           console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
         }
       }
     }
+    
+    console.log("Finished loading commands...\n");
   }
   
   /**
@@ -79,7 +86,7 @@ export class Boot {
           { body: commands },
         ) as string[];
         
-        console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+        console.log(`Successfully refreshed ${data.length} application (/) commands.`);
       } catch (error) {
         console.error(error);
       }
