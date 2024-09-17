@@ -1,11 +1,9 @@
-import {CacheType, Client, Interaction} from "discord.js";
+import { CacheType, Client, Interaction } from "discord.js";
 
 export class FunctionsForEvents {
   static async interaction(interaction: Interaction<CacheType>) {
     if (!interaction.isChatInputCommand()) return;
-    
     const command = interaction.client.commands.get(interaction.commandName);
-    console.log(command);
     
     if (!command) {
       console.error(`No command matching ${interaction.commandName} was found.`);
