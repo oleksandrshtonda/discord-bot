@@ -7,8 +7,9 @@ import { FunctionsForEvents } from "./utils/interaction.event";
 const client = new BotClient({ intents: [GatewayIntentBits.Guilds] });
 
 Boot.loadCommands(client);
-Boot.deployCommands();
+Boot.deployCommands(false);
 client.on(Events.InteractionCreate, FunctionsForEvents.interaction);
+client.on(Events.InviteCreate, FunctionsForEvents.inviteIsCreated);
 client.once(Events.ClientReady, FunctionsForEvents.clientReady);
 
 client.login(token);

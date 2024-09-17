@@ -15,11 +15,13 @@ export class Boot {
     for (const folder of commandsFolders) {
       const commandsPath = path.join(commandPath, folder);
       const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.ts'));
+      
       for (const file of commandFiles) {
         const filePath = path.join(commandsPath, file);
         const command = require(filePath);
+        console.log(file)
+        
         if ('data' in command && 'execute' in command) {
-          console.log("Booting commands...", command.data.name);
           client.commands.set(command.data.name, command);
         } else {
           console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
@@ -39,7 +41,7 @@ export class Boot {
    * Find your guildId here - {@link https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID} >
    * Right-click the server title > "Copy ID"
    * */
-  static deployCommands(): void {
+  static deployCommands(deleteOldCommands: boolean): void {
     const commandPath = path.join(__dirname, '../commands');
     const commandsFolders = fs.readdirSync(commandPath);
     const commands = [];
@@ -64,6 +66,14 @@ export class Boot {
       try {
         console.log(`Started refreshing ${commands.length} application (/) commands.`);
         
+        // here we delete all deployed commands
+        if (deleteOldCommands) {
+          rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: [] })
+            .then(() => console.log('Successfully deleted all guild commands.'))
+            .catch(console.error);
+        }
+        
+        // here we deploy commands
         const data: string[] = await rest.put(
           Routes.applicationGuildCommands(clientId, guildId),
           { body: commands },

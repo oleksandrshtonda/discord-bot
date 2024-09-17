@@ -1,4 +1,4 @@
-import { CacheType, Client, Interaction } from "discord.js";
+import {CacheType, Client, Interaction, Invite} from "discord.js";
 
 export class FunctionsForEvents {
   static async interaction(interaction: Interaction<CacheType>) {
@@ -24,5 +24,9 @@ export class FunctionsForEvents {
   
   static clientReady(readyClient: Client<true>) {
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+  }
+  
+  static inviteIsCreated(invite: Invite) {
+    console.log(invite.inviter);
   }
 }
