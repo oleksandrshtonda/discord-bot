@@ -1,11 +1,13 @@
 import path from "node:path";
 import fs from "node:fs";
 import {BotClient} from "../OverridedClasses/BotClient";
+import {Collection} from "discord.js";
 
 export class Boot {
   static loadCommands(client: BotClient): void {
     const commandPath = path.join(__dirname, '../commands');
     const commandsFolders = fs.readdirSync(commandPath);
+    client.commands = new Collection();
     
     for (const folder of commandsFolders) {
       const commandsPath = path.join(commandPath, folder);
